@@ -71,7 +71,7 @@ class GetDetailEducation(APIView):
         serializer = EducationSerializer(education, context={'request': request})
         if education.is_active:
             return Response(data=serializer.data, status=status.HTTP_200_OK)
-#------------------------------------------------------------------------------------------------------
+#--------------------------------related education------------------------------------------------------
 class GetRelatedEducation(APIView):
     def get(self,request,*args,**kwargs):
         education = get_object_or_404(Education, slug=kwargs['slug'])
@@ -80,4 +80,20 @@ class GetRelatedEducation(APIView):
             related_list.extend(Education.objects.filter(Q(is_active=True) & Q(group=group) & ~Q(id=education.id)))
         seralizer=EducationSerializer(related_list,many=True,context={'request': request})
         return Response(data=seralizer.data,status=status.HTTP_200_OK)
-        
+#---------------------------------list educationa group--------------------------------------------------
+class GetListOfEducationGroup(APIView):
+    def get(self,request,*args,**kwargs):
+        groups=EducationalGroup.objects.filter(Q(is_active=True))\
+                    .annotate(count=Count('educations_of_group'))\
+                    .order_by('-count')
+        serializer=EducationalGroupSerializer(groups,many=True)
+        return Response(data=serializer.data,status=status.HTTP_200_OK)
+#----------------------------------educations of groups-----------------------------------------------------
+class GetEducationOfGroups(APIView):
+    def get(self,request,*args,**kwargs):
+        group=get_object_or_404(EducationalGroup,slug=kwargs['slug'])
+        list_of_educations_group=Education.objects.filter(Q(is_active=True) & Q(group=group))\
+                                                                .order_by('-published_date')
+        serializer=EducationSerializer(list_of_educations_group,many=True,context={'request': request})
+        return Response(data=serializer.data,status=status.HTTP_200_OK)
+#-------------------------------------------------------------------------------------------
