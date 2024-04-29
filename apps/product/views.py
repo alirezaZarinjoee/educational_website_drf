@@ -72,3 +72,12 @@ class GetDetailEducation(APIView):
         if education.is_active:
             return Response(data=serializer.data, status=status.HTTP_200_OK)
 #------------------------------------------------------------------------------------------------------
+class GetRelatedEducation(APIView):
+    def get(self,request,*args,**kwargs):
+        education = get_object_or_404(Education, slug=kwargs['slug'])
+        related_list=[]
+        for group in education.group.all():
+            related_list.extend(Education.objects.filter(Q(is_active=True) & Q(group=group) & ~Q(id=education.id)))
+        seralizer=EducationSerializer(related_list,many=True,context={'request': request})
+        return Response(data=seralizer.data,status=status.HTTP_200_OK)
+        

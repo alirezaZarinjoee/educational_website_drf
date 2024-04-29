@@ -17,4 +17,5 @@ urlpatterns = [
     path('last_education/',GetLastEducation.as_view(),name='last_education'),
     path('popular_group_educations/',GetPopularGroupEducation.as_view(),name='popular_group_educations'),
     path('detail_education/<slug:slug>/',GetDetailEducation.as_view(),name='detail_education'),
+    path('related_education/<slug:slug>/',GetRelatedEducation.as_view(),name='related_education'),
 ]
