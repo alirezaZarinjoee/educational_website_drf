@@ -2,14 +2,27 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import *
 
+# router = DefaultRouter()
+# router.register(r'filter_viewset', FilterViewset)
+# router.register(r'educational_groups', EducationalGroupViewSet)
+# router.register(r'teacher',TeacherViewSet)
+# router.register(r'feature', FeatureViewSet)
+# router.register(r'education', EducationViewSet)
+# router.register(r'education_feature', EducationFeatureViewSet)
+# router.register(r'Education_videos', EducationVideosViewSet)
+# router.register(r'feature_value', FeatureValueViewSet)
+
 router = DefaultRouter()
-router.register(r'educational_groups', EducationalGroupViewSet)
-router.register(r'teacher',TeacherViewSet)
-router.register(r'feature', FeatureViewSet)
-router.register(r'education', EducationViewSet)
-router.register(r'education_feature', EducationFeatureViewSet)
-router.register(r'Education_videos', EducationVideosViewSet)
-router.register(r'feature_value', FeatureValueViewSet)
+router.register(r'filter_viewset', FilterViewset, basename='filter_viewset')
+router.register(r'educational_groups', EducationalGroupViewSet, basename='educational_groups')
+router.register(r'teacher',TeacherViewSet, basename='teacher')
+router.register(r'feature', FeatureViewSet, basename='feature')
+router.register(r'education', EducationViewSet, basename='education')
+router.register(r'education_feature', EducationFeatureViewSet, basename='education_feature')
+router.register(r'Education_videos', EducationVideosViewSet, basename='Education_videos')
+router.register(r'feature_value', FeatureValueViewSet, basename='feature_value')
+
+
 
 app_name='product'
 urlpatterns = [

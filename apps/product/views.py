@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.conf import settings
+from django_filters.rest_framework import DjangoFilterBackend
+from . filters import EducationFilter
 
 
 def media_admin(request):
@@ -125,6 +127,18 @@ class FilterByGroup(APIView):
         serializer=EducationalGroupSerializer(education_groups,many=True)
         return Response(data=serializer.data,status=status.HTTP_200_OK)
 #-----------------------------------------------------------------------------
+
+
+
+
+
+
+class FilterViewset(viewsets.ModelViewSet):
+    queryset = Education.objects.all()
+    serializer_class = EducationSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = EducationFilter
+
 
 
 
