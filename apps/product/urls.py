@@ -21,4 +21,5 @@ urlpatterns = [
     path('related_education/<slug:slug>/',GetRelatedEducation.as_view(),name='related_education'),
     path('list_of_group_education/',GetListOfEducationGroup.as_view(),name='list_of_group_education'),
     path('education_of_groups/<slug:slug>/',GetEducationOfGroups.as_view(),name='education_of_groups'),
+    path('filter_by_group/',FilterByGroup.as_view(),name='filter_by_group'),
 ]

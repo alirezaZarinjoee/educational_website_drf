@@ -14,7 +14,7 @@ def media_admin(request):
 
 
 
-#-------for panel admin--------
+#=======================for panel admin======================
 
 class EducationalGroupViewSet(viewsets.ModelViewSet):
     queryset = EducationalGroup.objects.all()
@@ -56,6 +56,10 @@ class FeatureValueViewSet(viewsets.ModelViewSet):
     queryset=FeatureValue.objects.all()
     serializer_class=FeatureValueSerializer
     # permission_classes=[permissions.IsAdminUser]
+    
+
+#=======================for educations=============================
+
 #------------------------------cheapest educations-----------------------------------------------
 class GetCheapestEducation(APIView):
     def get(self,request,*args,**kwargs):
@@ -108,4 +112,19 @@ class GetEducationOfGroups(APIView):
                                                                 .order_by('-published_date')
         serializer=EducationSerializer(list_of_educations_group,many=True,context={'request': request})
         return Response(data=serializer.data,status=status.HTTP_200_OK)
-#-------------------------------------------------------------------------------------------
+
+
+#=======================for filtering==============================
+
+#--------------------------filtering by group---------------------------------
+class FilterByGroup(APIView):
+    def get(self,request,*args,**kwargs):
+        education_groups=EducationalGroup.objects.annotate(count=Count('educations_of_group'))\
+                                                        .filter(Q(is_active=True) & ~Q(count=0))\
+                                                        .order_by('-count')
+        serializer=EducationalGroupSerializer(education_groups,many=True)
+        return Response(data=serializer.data,status=status.HTTP_200_OK)
+#-----------------------------------------------------------------------------
+
+
+
