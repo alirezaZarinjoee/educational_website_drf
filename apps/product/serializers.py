@@ -51,3 +51,21 @@ class FeatureValueSerializer(serializers.ModelSerializer):
     class Meta:
         model = FeatureValue
         fields = '__all__'
+
+class EducationFeatureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=EducationFeature
+        fields="__all__"
+#------------------------
+
+class TeacherSerializerNameFamily(serializers.ModelSerializer):
+    class Meta:
+        model = Teacher
+        fields = ('name', 'family')
+        
+class FeatureValueSerializer(serializers.ModelSerializer):
+    feature_values = EducationFeatureSerializer(many=True, read_only=True)#nested serializers
+    
+    class Meta:    
+        model=FeatureValue
+        fields="__all__"

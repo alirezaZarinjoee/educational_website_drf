@@ -2,15 +2,6 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import *
 
-# router = DefaultRouter()
-# router.register(r'filter_viewset', FilterViewset)
-# router.register(r'educational_groups', EducationalGroupViewSet)
-# router.register(r'teacher',TeacherViewSet)
-# router.register(r'feature', FeatureViewSet)
-# router.register(r'education', EducationViewSet)
-# router.register(r'education_feature', EducationFeatureViewSet)
-# router.register(r'Education_videos', EducationVideosViewSet)
-# router.register(r'feature_value', FeatureValueViewSet)
 
 router = DefaultRouter()
 router.register(r'filter_viewset', FilterViewset, basename='filter_viewset')
@@ -35,4 +26,7 @@ urlpatterns = [
     path('list_of_group_education/',GetListOfEducationGroup.as_view(),name='list_of_group_education'),
     path('education_of_groups/<slug:slug>/',GetEducationOfGroups.as_view(),name='education_of_groups'),
     path('filter_by_group/',FilterByGroup.as_view(),name='filter_by_group'),
+    path('min_and_max_price/',GetMinAndMaxPrice.as_view(),name='filter_by_group'),
+    path('get_teachers_name_family/',GetTeachers.as_view(),name='get_teachers_name_family'),
+    path('feacture_value/',GetFeatureValue.as_view(),name='feacture_value'),
 ]

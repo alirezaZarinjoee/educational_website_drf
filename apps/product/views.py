@@ -2,7 +2,7 @@ from rest_framework import viewsets,permissions
 from .models import *
 from .serializers import *
 from rest_framework.views import APIView
-from django.db.models import Q,Count
+from django.db.models import Q,Count,Min,Max
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -116,9 +116,11 @@ class GetEducationOfGroups(APIView):
         return Response(data=serializer.data,status=status.HTTP_200_OK)
 
 
+
+
 #=======================for filtering==============================
 
-#--------------------------filtering by group---------------------------------
+#--------------------------list group for filtering by group---------------------------------
 class FilterByGroup(APIView):
     def get(self,request,*args,**kwargs):
         education_groups=EducationalGroup.objects.annotate(count=Count('educations_of_group'))\
@@ -126,10 +128,25 @@ class FilterByGroup(APIView):
                                                         .order_by('-count')
         serializer=EducationalGroupSerializer(education_groups,many=True)
         return Response(data=serializer.data,status=status.HTTP_200_OK)
-#-----------------------------------------------------------------------------
-
-
-
+#--------------------------get min and max price of educations---------------------------------
+class GetMinAndMaxPrice(APIView):
+    def get(self,request,*args,**kwargs):
+        educations=Education.objects.filter(Q(is_active=True))
+        min_max_price=educations.aggregate(min_price=Min('price'),max_price=Max('price'))
+        return Response(min_max_price)
+#---------------------------get list teacher---------------------------------------------------
+class GetTeachers(APIView):
+    def get(self,request):
+        teachers=Teacher.objects.filter(Q(is_active=True)).order_by('name','family')
+        seirlizer=TeacherSerializerNameFamily(teachers,many=True)
+        return Response(data=seirlizer.data,status=status.HTTP_200_OK)
+#--------------------------get feature names---------------------------------------------------
+class GetFeatureValue(APIView):
+    def get(self,request):
+        feature_value=FeatureValue.objects.all()
+        serializer=FeatureValueSerializer(feature_value,many=True)
+        return Response(data=serializer.data,status=status.HTTP_200_OK)
+#--------------------------------------------------------------------
 
 
 
