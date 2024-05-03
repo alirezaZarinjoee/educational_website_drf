@@ -47,3 +47,7 @@ class EducationFeatureSerializer(serializers.ModelSerializer):
         model = EducationFeature
         fields = '__all__'
 
+class FeatureValueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FeatureValue
+        fields = '__all__'

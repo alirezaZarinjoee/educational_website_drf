@@ -9,6 +9,7 @@ router.register(r'feature', FeatureViewSet)
 router.register(r'education', EducationViewSet)
 router.register(r'education_feature', EducationFeatureViewSet)
 router.register(r'Education_videos', EducationVideosViewSet)
+router.register(r'feature_value', FeatureValueViewSet)
 
 app_name='product'
 urlpatterns = [

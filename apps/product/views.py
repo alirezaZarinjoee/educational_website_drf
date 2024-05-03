@@ -6,44 +6,56 @@ from django.db.models import Q,Count
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from django.conf import settings
+
+
+def media_admin(request):
+    return {'media_url':settings.MEDIA_URL}
+
+
 
 #-------for panel admin--------
 
 class EducationalGroupViewSet(viewsets.ModelViewSet):
     queryset = EducationalGroup.objects.all()
     serializer_class = EducationalGroupSerializer
-    permission_classes = [permissions.IsAdminUser]
+    # permission_classes = [permissions.IsAdminUser]
 
 
 class TeacherViewSet(viewsets.ModelViewSet):
     queryset=Teacher.objects.all()
     serializer_class=TeacherSerializer
-    permission_classes=[permissions.IsAdminUser]
+    # permission_classes=[permissions.IsAdminUser]
     
 
 class FeatureViewSet(viewsets.ModelViewSet):
     queryset = Feature.objects.all()
     serializer_class = FeatureSerializer
-    permission_classes=[permissions.IsAdminUser]
+    # permission_classes=[permissions.IsAdminUser]
     
 
 class EducationViewSet(viewsets.ModelViewSet):
     queryset = Education.objects.all()
     serializer_class = EducationSerializer
-    permission_classes=[permissions.IsAdminUser]
+    # permission_classes=[permissions.IsAdminUser]
     
 
 class EducationFeatureViewSet(viewsets.ModelViewSet):
     queryset = EducationFeature.objects.all()
     serializer_class = EducationFeatureSerializer
-    permission_classes=[permissions.IsAdminUser]
+    # permission_classes=[permissions.IsAdminUser]
     
     
 class EducationVideosViewSet(viewsets.ModelViewSet):
     queryset=EducationVideos.objects.all()
     serializer_class=EducationVideoSerializer
-    permission_classes=[permissions.IsAdminUser]
+    # permission_classes=[permissions.IsAdminUser]
     
+    
+class FeatureValueViewSet(viewsets.ModelViewSet):
+    queryset=FeatureValue.objects.all()
+    serializer_class=FeatureValueSerializer
+    # permission_classes=[permissions.IsAdminUser]
 #------------------------------cheapest educations-----------------------------------------------
 class GetCheapestEducation(APIView):
     def get(self,request,*args,**kwargs):

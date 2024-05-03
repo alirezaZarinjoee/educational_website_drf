@@ -97,11 +97,24 @@ class Education(models.Model):
         verbose_name='Education'
         verbose_name_plural='Educations'
 # #---------------------------------------------------------------------------------------
+class FeatureValue(models.Model):
+    value_title=models.CharField(verbose_name='value_title',max_length=100)
+    feature=models.ForeignKey(Feature, verbose_name='feature',null=True,blank=True,on_delete=models.CASCADE,related_name='feature_values')
+
+    def __str__(self):
+        return f'{self.id} - {self.value_title}'
+    
+    class Meta:
+        verbose_name='feature_value'
+        verbose_name_plural='feature_values'
+
+# #---------------------------------------------------------------------------------------
 # # model of EducationFeature
 class EducationFeature(models.Model):
     education=models.ForeignKey(Education, verbose_name='education', on_delete=models.CASCADE)
     feature=models.ForeignKey(Feature, verbose_name='feature', on_delete=models.CASCADE)
     value=models.CharField(verbose_name='value', max_length=100)
+    filter_value=models.ForeignKey(FeatureValue, verbose_name='filter_value',null=True,blank=True, on_delete=models.CASCADE,related_name='feature_values')
     
     def __str__(self):
         return f'{self.education} - {self.feature} : {self.value}'
