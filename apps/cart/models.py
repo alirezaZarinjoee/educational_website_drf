@@ -9,5 +9,5 @@ class CartItem(models.Model):
     update_date=models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
-        return f"{self.user.username}-{self.education.course_name}"
+        return f"{self.user.email}-{self.education.course_name}"
 

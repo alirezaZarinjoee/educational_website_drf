@@ -6,9 +6,12 @@ from .serializers import CartItemSerializer
 from apps.account.models import CustomUser
 from .models import CartItem
 from apps.product.models import Education
+from rest_framework.permissions import IsAuthenticated
 
 #----------------------------------------------------------------------------------------------
 class GetCart(APIView):
+    permission_classes=[IsAuthenticated]
+    
     def get(self,request):
         try:
             cart_items = CartItem.objects.filter(user=request.user)
@@ -20,6 +23,8 @@ class GetCart(APIView):
     
 #-----------------------------------------------------------------------------------------------
 class AddCart(APIView):
+    permission_classes=[IsAuthenticated]
+    
     def post(self,request,*args,**kwargs):
             item = get_object_or_404(Education, slug=kwargs['slug'])
 
@@ -33,6 +38,18 @@ class AddCart(APIView):
             cart_item.save()
             serializer = CartItemSerializer(cart_item,context={'request': request})
             return Response({'message': 'Given item quantity increased in cart', 'data': serializer.data}, status=status.HTTP_200_OK)
+    
+    def delete(self,request,*args,**kwargs):
+        item = get_object_or_404(Education, slug=kwargs['slug'])
+        
+        try:
+            cart_item = CartItem.objects.get(user=request.user,education=item)
+        except CartItem.DoesNotExist:
+            return Response({'message': 'There is no such item'}, status=status.HTTP_404_NOT_FOUND)
+            
+        cart_item.delete()
+        return Response({'message': 'Item removed from cart'}, status=status.HTTP_200_OK)
+        
 #-----------------------------------------------------------------------------------------------
 
         
