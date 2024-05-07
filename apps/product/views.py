@@ -147,9 +147,6 @@ class GetFeatureValue(APIView):
         serializer=FeatureValueSerializer(feature_value,many=True)
         return Response(data=serializer.data,status=status.HTTP_200_OK)
 #--------------------------------------------------------------------
-
-
-
 class FilterViewset(viewsets.ModelViewSet):
     queryset = Education.objects.all()
     serializer_class = EducationSerializer
