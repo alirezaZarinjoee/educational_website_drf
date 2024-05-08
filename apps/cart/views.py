@@ -1,13 +1,13 @@
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import permissions,status
+from rest_framework import status
 from .serializers import CartItemSerializer
 from apps.account.models import CustomUser
 from .models import CartItem
 from apps.product.models import Education
 from rest_framework.permissions import IsAuthenticated
-
+from django.db.models import Q
 #----------------------------------------------------------------------------------------------
 class GetCart(APIView):
     permission_classes=[IsAuthenticated]
@@ -18,11 +18,11 @@ class GetCart(APIView):
         except CartItem.DoesNotExist:
             return Response({'error': 'Cart items not found'}, status=status.HTTP_404_NOT_FOUND)
         
-        serializer = CartItemSerializer(cart_items, many=True,context={'request': request})
+        serializer = CartItemSerializer(cart_items, many=True,context={'request': request})#Because we used absolute URLs for educations, wherever educations have even the smallest role, we must send the request in the context in the serializer.
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 #-----------------------------------------------------------------------------------------------
-class AddCart(APIView):
+class AddAndDeleteCart(APIView):
     permission_classes=[IsAuthenticated]
     
     def post(self,request,*args,**kwargs):
@@ -36,7 +36,7 @@ class AddCart(APIView):
 
             # Save the cart item
             cart_item.save()
-            serializer = CartItemSerializer(cart_item,context={'request': request})
+            serializer = CartItemSerializer(cart_item,context={'request': request})#Because we used absolute URLs for educations, wherever educations have even the smallest role, we must send the request in the context in the serializer.
             return Response({'message': 'Given item quantity increased in cart', 'data': serializer.data}, status=status.HTTP_200_OK)
     
     def delete(self,request,*args,**kwargs):
@@ -51,6 +51,18 @@ class AddCart(APIView):
         return Response({'message': 'Item removed from cart'}, status=status.HTTP_200_OK)
         
 #-----------------------------------------------------------------------------------------------
+class GetTotalPrice(APIView):
+    def get(self,request,*args,**kwargs):
+        educations_of_user_in_cart=CartItem.objects.filter(Q(user=request.user))
+        if educations_of_user_in_cart:
+            tax=0.05
+            sum=0
+            for price in educations_of_user_in_cart:
+                sum+=price.education.price
+            total_price=((sum*tax)+sum)*10
+            return Response({'message':'The price is in Rials','total_price': total_price}, status=status.HTTP_200_OK)
+        return Response({'message':'There is no item in the shopping cart'},status=status.HTTP_404_NOT_FOUND)
+#------------------------------------------------------------------------------------------------
 
         
         
