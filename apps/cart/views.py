@@ -8,7 +8,7 @@ from .models import CartItem
 from apps.product.models import Education
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
-#----------------------------------------------------------------------------------------------
+#-------------------------------get all item in cart---------------------------------------------------------------
 class GetCart(APIView):
     permission_classes=[IsAuthenticated]
     
@@ -21,7 +21,7 @@ class GetCart(APIView):
         serializer = CartItemSerializer(cart_items, many=True,context={'request': request})#Because we used absolute URLs for educations, wherever educations have even the smallest role, we must send the request in the context in the serializer.
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-#-----------------------------------------------------------------------------------------------
+#--------------------------add and delete in cart---------------------------------------------------------------------
 class AddAndDeleteCart(APIView):
     permission_classes=[IsAuthenticated]
     
@@ -50,16 +50,19 @@ class AddAndDeleteCart(APIView):
         cart_item.delete()
         return Response({'message': 'Item removed from cart'}, status=status.HTTP_200_OK)
         
-#-----------------------------------------------------------------------------------------------
+#----------------Get the price of all items in the shopping cart in Rials---------------------------
 class GetTotalPrice(APIView):
     def get(self,request,*args,**kwargs):
+        #Getting the list of items in the cart for the current user
         educations_of_user_in_cart=CartItem.objects.filter(Q(user=request.user))
+        
         if educations_of_user_in_cart:
             tax=0.05
             sum=0
             for price in educations_of_user_in_cart:
                 sum+=price.education.price
-            total_price=((sum*tax)+sum)*10
+            total_price=((sum*tax)+sum)*10 #The price is in Rials
+            
             return Response({'message':'The price is in Rials','total_price': total_price}, status=status.HTTP_200_OK)
         return Response({'message':'There is no item in the shopping cart'},status=status.HTTP_404_NOT_FOUND)
 #------------------------------------------------------------------------------------------------
