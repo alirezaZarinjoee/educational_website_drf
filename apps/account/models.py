@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin,BaseUserManager
 from django.utils import timezone
+from utils import FileUpload
 
 
 
@@ -75,3 +76,18 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
     class Meta:
         verbose_name = 'user'
         verbose_name_plural = 'users'
+        
+        
+class Customer(models.Model):
+    user=models.OneToOneField(CustomUser, on_delete=models.CASCADE,primary_key=True)
+    phone_number=models.CharField(max_length=11,null=True,blank=True)
+    file_upload=FileUpload('images','customer')
+    image=models.ImageField(upload_to=file_upload.upload_to,null=True,blank=True)
+    
+    def __str__(self):
+        return f'{self.user}'
+    
+    class Meta:
+        verbose_name='customer'
+        verbose_name_plural='customers'
+        
