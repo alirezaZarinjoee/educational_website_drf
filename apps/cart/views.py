@@ -116,9 +116,12 @@ class Factor(APIView):
             return Response(None,status=status.HTTP_400_BAD_REQUEST)
         
         order_detail=OrderDetail.objects.filter(order=order)
+        total_price=0
+        for price in order_detail:
+            total_price+=price.education.price_of_education()
         serializer=OrderDetailSerializer(order_detail,many=True,context={'request': request})
         #When I want to have both a message(order_id) and a redirect, we must put serializer.data in the dictionary in the same way.
-        return Response({'order_id':order_id,'data': serializer.data}, status=status.HTTP_200_OK)
+        return Response({'total_price_by_tax':total_price,'order_id':order_id,'data': serializer.data}, status=status.HTTP_200_OK)
 #---------------------final and save info------------------------------------------------------------------
 class Final(APIView):
     def post(self,request,*args,**kwargs):

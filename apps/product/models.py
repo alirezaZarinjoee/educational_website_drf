@@ -84,6 +84,9 @@ class Education(models.Model):
     group=models.ManyToManyField(EducationalGroup, verbose_name='group',related_name='educations_of_group')
     feature=models.ManyToManyField(Feature, verbose_name='feature',through='EducationFeature')  #By adding the through feature, we can prevent the creation of the third table by orm and write a third table for it ourselves, which we can customize.
     
+    def price_of_education(self):
+        tax=0.05
+        return self.price+(self.price*tax)
        
     def save(self, *args, **kwargs):
         if not self.slug:
