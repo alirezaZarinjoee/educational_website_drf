@@ -14,4 +14,5 @@ urlpatterns = [
     path('total_price/',views.GetTotalPrice.as_view(),name='total_price'),
     path('create_order/',views.CreateOrder.as_view(),name='create_order'),
     path('factor/<int:order_id>/',views.Factor.as_view(),name='factor'),
+    path('final/<int:order_id>/',views.Final.as_view(),name='final'),
 ]

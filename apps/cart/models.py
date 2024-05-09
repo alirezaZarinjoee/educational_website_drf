@@ -15,8 +15,6 @@ class CartItem(models.Model):
         return f"{self.user.email}-{self.education.course_name}"
 
 
-
-
 class Order(models.Model):
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE,related_name='orders')
     register_date=models.DateField(default=timezone.now)
@@ -31,8 +29,6 @@ class Order(models.Model):
     class Meta:
         verbose_name='order'
         verbose_name_plural='orders'
-        
-        
         
         
 class OrderDetail(models.Model):

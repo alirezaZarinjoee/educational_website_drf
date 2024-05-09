@@ -110,12 +110,29 @@ class CreateOrder(APIView):
 class Factor(APIView):
     def get(self,request,*args,**kwargs):
         order_id=kwargs['order_id']
-        order=Order.objects.get(id=order_id)
+        try:
+            order=Order.objects.get(id=order_id)
+        except Order.DoesNotExist:
+            return Response(None,status=status.HTTP_400_BAD_REQUEST)
+        
         order_detail=OrderDetail.objects.filter(order=order)
         serializer=OrderDetailSerializer(order_detail,many=True,context={'request': request})
         #When I want to have both a message(order_id) and a redirect, we must put serializer.data in the dictionary in the same way.
         return Response({'order_id':order_id,'data': serializer.data}, status=status.HTTP_200_OK)
-#-----------------------------------------------------------------------------------------------------
+#---------------------final and save info------------------------------------------------------------------
+class Final(APIView):
+    def post(self,request,*args,**kwargs):
+        order_id=kwargs['order_id']
+        try:
+            order=Order.objects.get(id=order_id)
+        except Order.DoesNotExist:
+            return Response(None,status=status.HTTP_400_BAD_REQUEST)
+
+        order.is_finaly=True
+        order.save()
+        return Response({'message':'Your purchase was successful'},status=status.HTTP_200_OK)            
+        
+        
 
         
        
