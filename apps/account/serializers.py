@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import CustomUser
+from .models import CustomUser,Customer
 from rest_framework.exceptions import ValidationError
+
 
 class CustomUserSerializer(serializers.ModelSerializer):
     repassword = serializers.CharField(write_only=True)
@@ -21,3 +22,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
         del validated_data['repassword']
         return CustomUser.objects.creat_user(**validated_data)
         
+        
+
+class CustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Customer
+        fields='__all__'

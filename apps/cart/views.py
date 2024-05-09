@@ -2,12 +2,27 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import CartItemSerializer
+from .serializers import CartItemSerializer,OrderSerializer,OrderDetailSerializer
 from apps.account.models import CustomUser
-from .models import CartItem
+from .models import CartItem,Order,OrderDetail
 from apps.product.models import Education
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
+from rest_framework import viewsets,permissions
+
+#---------------for panel admin--------------------------
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset=Order.objects.all()
+    serializer_class=OrderSerializer
+    # permission_classes=[permissions.IsAdminUser]
+
+
+class OrderDetailViewSet(viewsets.ModelViewSet):
+    queryset=OrderDetail.objects.all()
+    serializer_class=OrderDetailSerializer
+    # permission_classes=[permissions.IsAdminUser]
+
+
 #-------------------------------get all item in cart---------------------------------------------------------------
 class GetCart(APIView):
     permission_classes=[IsAuthenticated]

@@ -2,13 +2,23 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 # from django.shortcuts import redirect
-from .serializers import CustomUserSerializer
+from .serializers import CustomUserSerializer,CustomerSerializer
 from utils import sendEmail2,crete_random
-from .models import CustomUser
+from .models import CustomUser,Customer
 from django.contrib.auth import authenticate,login,logout
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets,permissions
 
+
+#-------------------for panel admin-------------------------
+class CustomerViewSet(viewsets.ModelViewSet):
+    queryset=Customer.objects.all()
+    serializer_class=CustomerSerializer
+    # permission_classes=[permissions.IsAdminUser]
+
+
+#-------------------------------------------------------
 
 class RegisterAPIView(APIView):
     def post(self, request, *args, **kwargs): 
