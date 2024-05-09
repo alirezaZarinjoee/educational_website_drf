@@ -15,6 +15,7 @@ class TeacherSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class FeatureSerializer(serializers.ModelSerializer):
+    educational_group=EducationalGroupSerializer(read_only=True)
     class Meta:
         model = Feature
         fields = '__all__'
@@ -30,7 +31,9 @@ class EducationVideoSerializer(serializers.ModelSerializer):
 #We have done this in this serializer to get the details of a product instead of using the get_absolute_url function in the model file. We have also sent a text for the serializer in the view, which you can see
 class EducationSerializer(serializers.ModelSerializer):
     videos = EducationVideoSerializer(many=True, read_only=True)#nested serializers
-    
+    teacher=TeacherSerializer(read_only=True)
+    group=EducationalGroupSerializer(read_only=True,many=True)#If a field did not even come with related_name, but it gives us a list of data, the many option should be set to true.
+    feature=FeatureSerializer(read_only=True,many=True)
     class Meta:
         model = Education
         fields = '__all__'
