@@ -101,20 +101,24 @@ class CreateOrder(APIView):
             
             return Response({
                         'message':'Your educations are displayed as an invoice for final payment','redirect': f'/cart/factor/{order.id}/'},
-                        headers={'Location': '/cart/final/'},
+                        headers={'Location': f'/cart/factor/{order.id}/'},
                         status=status.HTTP_200_OK)
 
         else:
             return Response({'message':'There are no items in your shopping cart'},status=status.HTTP_400_BAD_REQUEST)
-#----------------------------------------------------------------------------------------------------
+#-----------------------show factor for user-------------------------------------------------------------
 class Factor(APIView):
     def get(self,request,*args,**kwargs):
         order_id=kwargs['order_id']
         order=Order.objects.get(id=order_id)
         order_detail=OrderDetail.objects.filter(order=order)
         serializer=OrderDetailSerializer(order_detail,many=True,context={'request': request})
-        return Response(data=serializer.data,status=status.HTTP_200_OK)
-    
+        #When I want to have both a message(order_id) and a redirect, we must put serializer.data in the dictionary in the same way.
+        return Response({'order_id':order_id,'data': serializer.data}, status=status.HTTP_200_OK)
+#-----------------------------------------------------------------------------------------------------
+
+        
+       
         
 
         
