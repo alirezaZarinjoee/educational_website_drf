@@ -98,10 +98,11 @@ class CreateOrder(APIView):
                     price=item.education.price)
             
             return Response({
-                        'message':'Your educations are displayed as an invoice for final payment','redirect': '/cart/final/'},
+                        'message':'Your educations are displayed as an invoice for final payment','redirect': '/cart/final/','order_id':order.id},
                         headers={'Location': '/cart/final/'},
                         status=status.HTTP_200_OK)
 
         else:
             return Response({'message':'There are no items in your shopping cart'},status=status.HTTP_400_BAD_REQUEST)
-              
+#----------------------------------------------------------------------------------------------------
+
