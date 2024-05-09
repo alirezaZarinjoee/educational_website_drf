@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import CartItemSerializer,OrderSerializer,OrderDetailSerializer
-from apps.account.models import CustomUser
+from apps.account.models import CustomUser,Customer
 from .models import CartItem,Order,OrderDetail
 from apps.product.models import Education
 from rest_framework.permissions import IsAuthenticated
@@ -80,7 +80,28 @@ class GetTotalPrice(APIView):
             
             return Response({'message':'The price is in Rials','total_price': total_price}, status=status.HTTP_200_OK)
         return Response({'message':'There is no item in the shopping cart'},status=status.HTTP_404_NOT_FOUND)
-#------------------------------------------------------------------------------------------------
+#-----------------Continue the process of purchasing and creating an order--------------------------
+class CreateOrder(APIView):
+    def post(self,request,*args,**kwargs):
+        
+        user=request.user
+        customer, created = Customer.objects.get_or_create(user=user)
+        
+        order=Order.objects.create(customer=customer)
+        
+        list_of_item_in_cart=CartItem.objects.filter(Q(user=user))
+        if list_of_item_in_cart:
+            for item in list_of_item_in_cart:
+                OrderDetail.objects.create(
+                    order=order,
+                    education=item.education,
+                    price=item.education.price)
+            
+            return Response({
+                        'message':'Your educations are displayed as an invoice for final payment','redirect': '/cart/final/'},
+                        headers={'Location': '/cart/final/'},
+                        status=status.HTTP_200_OK)
 
-        
-        
+        else:
+            return Response({'message':'There are no items in your shopping cart'},status=status.HTTP_400_BAD_REQUEST)
+              
