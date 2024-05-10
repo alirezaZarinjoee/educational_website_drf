@@ -24,7 +24,7 @@ class Order(models.Model):
     discount=models.IntegerField(blank=True,null=True,default=0)#OFF on factor
     
     def __str__(self):
-        return f'{self.customer} - {self.id} - {self.is_finaly}'
+        return f'{self.customer} - {self.id} - {self.is_finaly} - {self.order_code}'
     
     class Meta:
         verbose_name='order'

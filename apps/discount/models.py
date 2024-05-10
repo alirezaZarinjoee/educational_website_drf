@@ -34,4 +34,4 @@ class DiscountBasket(models.Model):
 
 class DiscountBasketDetails(models.Model):
     discount_basket=models.ForeignKey(DiscountBasket, on_delete=models.CASCADE,related_name='discount_basket_details1')
-    product=models.ForeignKey(Education,on_delete=models.CASCADE,null=True,blank=True,related_name='discount_basket_details2')
+    education=models.ForeignKey(Education,on_delete=models.CASCADE,null=True,blank=True,related_name='discount_basket_details2')

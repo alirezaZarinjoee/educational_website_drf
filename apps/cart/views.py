@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import CartItemSerializer,OrderSerializer,OrderDetailSerializer
+from .serializers import CartItemSerializer,OrderSerializer,OrderDetailSerializer,OrderDetailGetSerializer
 from apps.account.models import CustomUser,Customer
 from .models import CartItem,Order,OrderDetail
 from apps.product.models import Education
@@ -119,7 +119,7 @@ class Factor(APIView):
         total_price=0
         for price in order_detail:
             total_price+=price.education.price_of_education()
-        serializer=OrderDetailSerializer(order_detail,many=True,context={'request': request})
+        serializer=OrderDetailGetSerializer(order_detail,many=True,context={'request': request})
         #When I want to have both a message(order_id) and a redirect, we must put serializer.data in the dictionary in the same way.
         return Response({'total_price_by_tax':total_price,'order_id':order_id,'data': serializer.data}, status=status.HTTP_200_OK)
 #---------------------final and save info------------------------------------------------------------------
