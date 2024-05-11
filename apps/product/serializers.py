@@ -30,25 +30,31 @@ class EducationVideoSerializer(serializers.ModelSerializer):
 
 #We have done this in this serializer to get the details of a product instead of using the get_absolute_url function in the model file. We have also sent a text for the serializer in the view, which you can see
 class EducationSerializer(serializers.ModelSerializer):
-    videos = EducationVideoSerializer(many=True, read_only=True)#nested serializers
-    # teacher=TeacherSerializer(read_only=True)
-    # group=EducationalGroupSerializer(read_only=True,many=True)#If a field did not even come with related_name, but it gives us a list of data, the many option should be set to true.
-    # feature=FeatureSerializer(read_only=True,many=True)
+    videos = EducationVideoSerializer(many=True, read_only=True)
+    price_with_discount = serializers.SerializerMethodField()
+    price_of_education_by_tax = serializers.SerializerMethodField() 
+
     class Meta:
         model = Education
         fields = '__all__'
-        read_only_fields = ['absolute_url', 'videos']
+        read_only_fields = ['absolute_url', 'videos', 'price_with_discount', 'price_of_education_by_tax']  # Add the new field here
     absolute_url = serializers.SerializerMethodField()
-    
     def get_absolute_url(self, obj):
         request = self.context.get('request')
         return request.build_absolute_uri(reverse('product:detail_education', args=[obj.slug]))
-    
+
+    def get_price_with_discount(self, obj):
+        return obj.get_price_by_discount()
+
+    def get_price_of_education_by_tax(self, obj):  
+        return obj.price_of_education_by_tax()
+
     def to_representation(self, instance):
         self.fields['teacher'] = TeacherSerializer(read_only=True)
         self.fields['group'] = EducationalGroupSerializer(read_only=True,many=True)
         self.fields['feature'] = FeatureSerializer(read_only=True,many=True)
         return super(EducationSerializer, self).to_representation(instance)
+
 
 
 class EducationFeatureSerializer(serializers.ModelSerializer):

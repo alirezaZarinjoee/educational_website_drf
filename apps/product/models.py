@@ -2,7 +2,7 @@ from django.db import models
 from utils import FileUpload
 from django.utils import timezone
 from django.utils.text import slugify
-
+from datetime import datetime
 
 #---------------------------------------------------------------------------------------
 class Teacher(models.Model):
@@ -84,10 +84,24 @@ class Education(models.Model):
     group=models.ManyToManyField(EducationalGroup, verbose_name='group',related_name='educations_of_group')
     feature=models.ManyToManyField(Feature, verbose_name='feature',through='EducationFeature')  #By adding the through feature, we can prevent the creation of the third table by orm and write a third table for it ourselves, which we can customize.
     
-    def price_of_education(self):
+    def price_of_education_by_tax(self):
         tax=0.05
         return self.price+(self.price*tax)
-       
+    
+    def get_price_by_discount(self):
+        list1=[]
+        current_time=datetime.now()
+        for dbd in self.discount_basket_details2.all():
+            if (dbd.discount_basket.is_active==True and 
+                dbd.discount_basket.start_date1 <= current_time and 
+                current_time <= dbd.discount_basket.end_date1):
+                list1.append(dbd.discount_basket.discount_percent)
+
+        discount=0
+        if (len(list1)>0):
+            discount=max(list1)
+        return self.price_of_education_by_tax()-(self.price*discount/100)
+    
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.course_name)
