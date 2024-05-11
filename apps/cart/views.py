@@ -9,6 +9,8 @@ from apps.product.models import Education
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
 from rest_framework import viewsets,permissions
+from apps.discount.models import Coupon
+from datetime import datetime
 
 #---------------for panel admin--------------------------
 class OrderViewSet(viewsets.ModelViewSet):
@@ -115,13 +117,33 @@ class Factor(APIView):
         except Order.DoesNotExist:
             return Response(None,status=status.HTTP_400_BAD_REQUEST)
         
+        discount_coupon=0
+        coupon_code=request.data.get('coupon')
+        if coupon_code:
+            coupon=Coupon.objects.filter(
+                Q(coupon_code=coupon_code) &
+                Q(is_active=True) &
+                Q(start_date__lte=datetime.now())&
+                Q(end_date__gte=datetime.now())
+            )
+
+            if coupon:
+                discount=coupon[0].discount_percent
+                discount_coupon=discount
+                order.discount=discount
+                order.save()
+            
         order_detail=OrderDetail.objects.filter(order=order)
+        
         total_price=0
         for price in order_detail:
             total_price+=price.education.get_price_by_discount()
+            
+        total_price_by_coupon=total_price-(total_price*(discount_coupon/100))
+        
         serializer=OrderDetailGetSerializer(order_detail,many=True,context={'request': request})
         #When I want to have both a message(order_id) and a redirect, we must put serializer.data in the dictionary in the same way.
-        return Response({'total_price_by_tax':total_price,'order_id':order_id,'data': serializer.data}, status=status.HTTP_200_OK)
+        return Response({'total_price_by_tax':total_price_by_coupon,'order_id':order_id,'data': serializer.data}, status=status.HTTP_200_OK)
 #---------------------final and save info------------------------------------------------------------------
 class Final(APIView):
     def post(self,request,*args,**kwargs):
