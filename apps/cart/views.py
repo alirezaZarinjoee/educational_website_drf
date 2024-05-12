@@ -112,10 +112,15 @@ class CreateOrder(APIView):
 class Factor(APIView):
     def get(self,request,*args,**kwargs):
         order_id=kwargs['order_id']
+        user=request.user
+        
         try:
             order=Order.objects.get(id=order_id)
         except Order.DoesNotExist:
             return Response(None,status=status.HTTP_400_BAD_REQUEST)
+        
+        if order.customer.user != user:
+            return Response({'detail': 'Unauthorized access.'}, status=status.HTTP_400_BAD_REQUEST)
         
         discount_coupon=0
         coupon_code=request.data.get('coupon')
