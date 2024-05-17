@@ -29,4 +29,5 @@ urlpatterns = [
     path('min_and_max_price/',GetMinAndMaxPrice.as_view(),name='filter_by_group'),
     path('get_teachers_name_family/',GetTeachers.as_view(),name='get_teachers_name_family'),
     path('feacture_value/',GetFeatureValue.as_view(),name='feacture_value'),
+    path('get_comment/<int:education_id>/',GetCommentsOfEducation.as_view(),name='get_comment'),
 ]

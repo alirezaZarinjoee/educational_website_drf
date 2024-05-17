@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django_filters.rest_framework import DjangoFilterBackend
 from . filters import EducationFilter
+from apps.comment.serializers import CommentSerializerAdmin
 
 
 def media_admin(request):
@@ -114,9 +115,23 @@ class GetEducationOfGroups(APIView):
                                                                 .order_by('-published_date')
         serializer=EducationSerializer(list_of_educations_group,many=True,context={'request': request})
         return Response(data=serializer.data,status=status.HTTP_200_OK)
+#--------------------show comments of education-------------------------------
+class GetCommentsOfEducation(APIView):
+    def get(self,request,*args,**kwargs):
+        education_id=kwargs['education_id']
+        try:
+            education=Education.objects.get(id=education_id)
+        except Education.DoesNotExist:
+            return Response({'message':'DoesNotExist'},status=status.HTTP_400_BAD_REQUEST)
+        
+        comments = education.comments.filter(Q(is_active=True))
+        serializer = CommentSerializerAdmin(comments, many=True)
+        
+        return Response(serializer.data,status=status.HTTP_200_OK)
 
 
-
+            
+         
 
 #=======================for filtering==============================
 
