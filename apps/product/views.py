@@ -39,7 +39,7 @@ class FeatureViewSet(viewsets.ModelViewSet):
 class EducationViewSet(viewsets.ModelViewSet):
     queryset = Education.objects.all()
     serializer_class = EducationSerializer
-    # permission_classes=[permissions.IsAdminUser]
+    permission_classes=[permissions.IsAdminUser]
     
 
 class EducationFeatureViewSet(viewsets.ModelViewSet):
