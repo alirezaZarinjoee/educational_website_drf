@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'apps.cart.apps.CartConfig',
     'apps.discount.apps.DiscountConfig',
     'apps.comment.apps.CommentConfig',
+    'apps.blog.apps.BlogConfig',
     'rest_framework.authtoken',
     'drf_spectacular',
     'django_filters',
