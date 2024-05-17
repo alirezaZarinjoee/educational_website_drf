@@ -44,10 +44,10 @@ INSTALLED_APPS = [
     'apps.product.apps.ProductConfig',
     'apps.cart.apps.CartConfig',
     'apps.discount.apps.DiscountConfig',
+    'apps.comment.apps.CommentConfig',
     'rest_framework.authtoken',
     'drf_spectacular',
     'django_filters',
-    
 ]
 
 MIDDLEWARE = [

@@ -30,6 +30,7 @@ urlpatterns = [
     path('product/',include('apps.product.urls',namespace='product')),
     path('cart/',include('apps.cart.urls',namespace='cart')),
     path('discount/',include('apps.discount.urls',namespace='discount')),
+    path('comment/',include('apps.comment.urls',namespace='comment')),
     path('auth-token/',obtain_auth_token,name='generic-auth-token'),
       # YOUR PATTERNS
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
