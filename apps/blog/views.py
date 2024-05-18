@@ -21,16 +21,16 @@ class BlogViewSet(viewsets.ModelViewSet):
 #-------------get bloge-----------------
 class GetBlog(APIView):
     def get(self,request):
-        blogs=Blog.objects.all()
+        blogs=Blog.objects.filter(is_active=True)
         serializer=BlogSerializer(blogs,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
 #--------------get detail blog----------
 class DetailBlog(APIView):
     def get(self,request,*args,**kwargs):
-        blog_id=kwargs['blog_id']
+        slug=kwargs['slug']
         try:
-            blog=Blog.objects.get(id=blog_id)
+            blog=Blog.objects.get(slug=slug)
         except Blog.DoesNotExist:
             return Response(None,status=status.HTTP_400_BAD_REQUEST)
         
