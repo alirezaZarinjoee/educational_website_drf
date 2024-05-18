@@ -151,6 +151,7 @@ class Factor(APIView):
         return Response({'total_price_by_tax':total_price_by_coupon,'order_id':order_id,'data': serializer.data}, status=status.HTTP_200_OK)
 #---------------------final and save info------------------------------------------------------------------
 class Final(APIView):
+
     def post(self,request,*args,**kwargs):
         order_id=kwargs['order_id']
         try:
@@ -160,9 +161,10 @@ class Final(APIView):
 
         order.is_finaly=True
         order.save()
-        return Response({'message':'Your purchase was successful'},status=status.HTTP_200_OK)            
-        
-        
+        purchased_educations = order.purchased_educations()
+        for education in purchased_educations:
+            education.customers.add(request.user.customer)
+        return Response({'message':'Your purchase was successful'},status=status.HTTP_200_OK)
 
         
        

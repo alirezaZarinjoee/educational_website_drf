@@ -40,7 +40,7 @@ class FeatureViewSet(viewsets.ModelViewSet):
 class EducationViewSet(viewsets.ModelViewSet):
     queryset = Education.objects.all()
     serializer_class = EducationSerializer
-    permission_classes=[permissions.IsAdminUser]
+    # permission_classes=[permissions.IsAdminUser]
     
 
 class EducationFeatureViewSet(viewsets.ModelViewSet):
@@ -83,13 +83,25 @@ class GetPopularGroupEducation(APIView):
                                         .order_by('-count')[:3]
         serailizer=EducationalGroupSerializer(popular_group_educations,many=True)
         return Response(data=serailizer.data,status=status.HTTP_200_OK)
-#------------------------------detail education and videos---------------------------------------------
+#------------------------------detail education---------------------------------------------
+
 class GetDetailEducation(APIView):
     def get(self, request, *args, **kwargs):
         education = get_object_or_404(Education, slug=kwargs['slug'])
         serializer = EducationSerializer(education, context={'request': request})
         if education.is_active:
             return Response(data=serializer.data, status=status.HTTP_200_OK)
+        
+#------------------------------detail education and videos---------------------------------------------
+class GetVideosEducation(APIView):
+    def get(self, request, *args, **kwargs):
+        education = get_object_or_404(Education, slug=kwargs['slug'])
+        if education.is_active and education.purchased_by_user(request.user):
+            serializer = EducationSerializer(education, context={'request': request})
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({'detail': 'Unauthorized access.'}, status=status.HTTP_403_FORBIDDEN)
+
 #--------------------------------related education------------------------------------------------------
 class GetRelatedEducation(APIView):
     def get(self,request,*args,**kwargs):

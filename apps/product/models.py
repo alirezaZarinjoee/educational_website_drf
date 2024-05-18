@@ -3,7 +3,7 @@ from utils import FileUpload
 from django.utils import timezone
 from django.utils.text import slugify
 from datetime import datetime
-
+from apps.account.models import Customer
 #---------------------------------------------------------------------------------------
 class Teacher(models.Model):
     name=models.CharField(max_length=50)
@@ -83,6 +83,11 @@ class Education(models.Model):
     teacher=models.ForeignKey(Teacher, verbose_name='teacher', on_delete=models.CASCADE,related_name='educations_of_teacher')
     group=models.ManyToManyField(EducationalGroup, verbose_name='group',related_name='educations_of_group')
     feature=models.ManyToManyField(Feature, verbose_name='feature',through='EducationFeature')  #By adding the through feature, we can prevent the creation of the third table by orm and write a third table for it ourselves, which we can customize.
+    customers = models.ManyToManyField(Customer,null=True,blank=True,related_name='purchased_educations')
+    
+    
+    def purchased_by_user(self, user):
+        return self.customers.filter(user=user).exists()
     
     def price_of_education_by_tax(self):
         tax=0.05

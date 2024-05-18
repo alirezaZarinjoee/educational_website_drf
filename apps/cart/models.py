@@ -23,6 +23,10 @@ class Order(models.Model):
     order_code=models.UUIDField(unique=True,default=uuid.uuid4,editable=False)
     discount=models.IntegerField(blank=True,null=True,default=0)#OFF on factor
     
+    
+    def purchased_educations(self):
+        return [detail.education for detail in self.order_details_1.all()]
+    
     def __str__(self):
         return f'{self.customer} - {self.id} - {self.is_finaly} - {self.order_code}'
     
